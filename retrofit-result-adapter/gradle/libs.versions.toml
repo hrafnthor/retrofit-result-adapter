@@ -1,0 +1,17 @@
+[versions]
+kotlinResult = "1.1.16"
+okhttp3 = "4.9.3"
+retrofit2 = "2.9.0"
+retrofit2SerializationConverter = "0.8.0"
+
+[libraries]
+michaelbull-result = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
+okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
+okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
+retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit2" }
+retrofit2-kotlin-serialization = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2SerializationConverter" }
+
+[bundles]
+network = ["okhttp3", "okhttp3-logging", "retrofit2", "retrofit2-kotlin-serialization"]
+
+[plugins]
