@@ -4,7 +4,7 @@ public interface ErrorProcessor<E> {
 
     public fun onEmpty(): E
 
-    public fun onNetworkError(code: Int, errorBody: ResponseBody): E
+    public fun onNetworkError(code: Int, errorBody: ResponseBody?): E
 
     public fun onException(error: Throwable): E
 
