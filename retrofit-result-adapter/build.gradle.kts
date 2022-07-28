@@ -17,9 +17,7 @@ dependencies {
     implementation(libs.michaelbull.result)
 
     testImplementation(kotlin("test"))
-    testImplementation(libs.okhttp3.mockserver)
-    testImplementation(libs.kotest.runner.junit5)
-
+    testImplementation(libs.bundles.testing)
 }
 
 tasks.test {
