@@ -2,22 +2,17 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import okhttp3.Request
-import okio.IOException
 import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 internal open class ResultCall<T, E>(
-    internal val delegate: Call<T>,
-    internal val preconditions: List<Condition<E>>,
-    internal val processor: ErrorProcessor<E>,
+    private val delegate: Call<T>,
+    private val emptyResult: Result<T, E>,
+    private val preconditions: List<Condition<E>>,
+    private val processor: ErrorProcessor<E>,
 ) : Call<Result<T, E>> {
-
-    /**
-     *
-     */
-    open fun onEmptySuccess(): Result<T, E> = Err(processor.onEmpty())
 
     override fun enqueue(callback: Callback<Result<T, E>>) {
         preconditions.forEach { condition ->
@@ -39,22 +34,10 @@ internal open class ResultCall<T, E>(
         })
     }
 
-    override fun clone(): Call<Result<T, E>> = ResultCall(delegate.clone(), preconditions, processor)
+    override fun clone(): Call<Result<T, E>> = ResultCall(delegate.clone(), emptyResult, preconditions, processor)
 
     override fun execute(): Response<Result<T, E>> {
-        preconditions.forEach { condition ->
-            val error = condition.check()
-            if (error != null) {
-                return Response.success(Err(error))
-            }
-        }
-
-        val result: Result<T, E> = try {
-            onResponse(delegate.execute())
-        } catch (error: IOException) {
-            onFailure(error)
-        }
-        return Response.success(result)
+        throw UnsupportedOperationException("Calling 'execute()' is not supported!")
     }
 
     override fun isExecuted(): Boolean = delegate.isExecuted
@@ -68,16 +51,16 @@ internal open class ResultCall<T, E>(
     override fun timeout(): Timeout = delegate.timeout()
 
     private fun onResponse(response: Response<T>): Result<T, E> {
-        val body = response.body()
+        val body: T? = response.body()
         return when {
             response.isSuccessful && body != null -> Ok(body)
-            response.isSuccessful -> onEmptySuccess()
+            response.isSuccessful -> emptyResult
             else -> {
                 val code = response.code()
                 val errorBody = response.errorBody()
                 val converted: E = when {
-                    errorBody == null -> processor.onUnknown("Received error body is null!")
-                    errorBody.contentLength() == 0L -> processor.onUnknown("Received error body is malformed!")
+                    errorBody == null -> processor.onNetworkError(code, null)
+                    errorBody.contentLength() == 0L -> processor.onNetworkError(code, null)
                     else -> try {
                         processor.onNetworkError(code, errorBody)
                     } catch (e: Exception) {
@@ -91,21 +74,3 @@ internal open class ResultCall<T, E>(
 
     private fun onFailure(error: Throwable): Result<T, E> = Err(processor.onException(error))
 }
-
-/**
- * A special case of [ResultCall] which can succeed without having any payload body
- */
-internal class EmptyResultCall<E>(
-    delegate: Call<Unit>,
-    preconditions: List<Condition<E>>,
-    processor: ErrorProcessor<E>,
-) : ResultCall<Unit, E>(
-    delegate = delegate,
-    preconditions = preconditions,
-    processor = processor,
-) {
-    override fun onEmptySuccess(): Result<Unit, E> = Ok(Unit)
-
-    override fun clone(): Call<Result<Unit, E>> = EmptyResultCall(delegate.clone(), preconditions, processor)
-}
-
