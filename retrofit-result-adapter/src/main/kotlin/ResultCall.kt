@@ -10,19 +10,10 @@ import retrofit2.Response
 internal open class ResultCall<T, E>(
     private val delegate: Call<T>,
     private val emptyResult: Result<T, E>,
-    private val preconditions: List<Condition<E>>,
     private val processor: ErrorProcessor<E>,
 ) : Call<Result<T, E>> {
 
     override fun enqueue(callback: Callback<Result<T, E>>) {
-        preconditions.forEach { condition ->
-            val error = condition.check()
-            if (error != null) {
-                callback.onResponse(this, Response.success(Err(error)))
-                return
-            }
-        }
-
         return delegate.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 callback.onResponse(this@ResultCall, Response.success(onResponse(response)))
@@ -34,7 +25,7 @@ internal open class ResultCall<T, E>(
         })
     }
 
-    override fun clone(): Call<Result<T, E>> = ResultCall(delegate.clone(), emptyResult, preconditions, processor)
+    override fun clone(): Call<Result<T, E>> = ResultCall(delegate.clone(), emptyResult, processor)
 
     override fun execute(): Response<Result<T, E>> {
         throw UnsupportedOperationException("Calling 'execute()' is not supported!")

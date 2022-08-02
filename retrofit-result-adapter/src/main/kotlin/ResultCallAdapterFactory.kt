@@ -9,8 +9,7 @@ import com.github.michaelbull.result.Result
 
 
 public class ResultCallAdapterFactory<E>(
-    private val processor: ErrorProcessor<E>,
-    private val preconditions: List<Condition<E>> = emptyList()
+    private val processor: ErrorProcessor<E>
 ) : CallAdapter.Factory() {
 
     override fun get(
@@ -32,7 +31,7 @@ public class ResultCallAdapterFactory<E>(
                     annotations.contains(NullableBody()) -> Ok(null)
                     else -> Err(processor.onEmpty())
                 }
-                ResultCallAdapter(resultType, emptyResult, processor, preconditions)
+                ResultCallAdapter(resultType, emptyResult, processor)
             }
             else -> null
         }
