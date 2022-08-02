@@ -11,7 +11,6 @@ import okhttp3.mockwebserver.SocketPolicy
 import okio.Buffer
 import retrofit2.Retrofit
 import retrofit2.http.GET
-import retrofit2.http.Path
 
 internal class AdapterTest : StringSpec({
 
@@ -173,13 +172,6 @@ internal class AdapterTest : StringSpec({
 
         @GET("/")
         suspend fun unit(): Result<Unit, String>
-
-        @GET("/{a}/{b}/{c}")
-        suspend fun params(
-            @Path("a") a: String,
-            @Path("b") b: String,
-            @Path("c") c: String
-        ): String
     }
 
     internal object Processor : ErrorProcessor<String> {
