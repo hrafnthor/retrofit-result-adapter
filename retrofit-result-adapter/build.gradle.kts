@@ -10,6 +10,8 @@ plugins {
     checkstyle
 }
 
+group = "is.hth"
+
 allprojects {
     repositories {
         mavenCentral()
@@ -69,12 +71,8 @@ val properties: Properties = if (localProps.exists()) {
         setProperty("signingKey", env["GPG_SIGNING_KEY"])
         setProperty("signingKeyId", env["GPG_SIGNING_KEY_ID"])
         setProperty("signingKeyPassword", env["GPG_PASSPHRASE"])
-        setProperty("version", env["VERSION"])
     }
 }
-
-group = "is.hth"
-version = properties.getProperty("version")
 
 nexusPublishing {
     repositories {
