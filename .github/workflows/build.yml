@@ -21,7 +21,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    if: github.repository == 'hrafnth/retrofit-result-adapter'
+    if: github.repository == 'hrafnthor/retrofit-result-adapter'
     needs:
       - jvm
       
