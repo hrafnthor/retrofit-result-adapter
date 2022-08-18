@@ -134,16 +134,16 @@ internal class AdapterTest : StringSpec({
 
     "network error with error body results in Err(errorBody)" {
         val localProcessor = object:ErrorProcessor<String> {
-        override fun onEmpty(): String = ""
+            override fun onEmpty(): String = ""
 
-        override fun onNetworkError(code: Int, errorBody: ResponseBody?): String {
-           return errorBody?.string() ?: "Incorrect"
+            override fun onNetworkError(code: Int, errorBody: ResponseBody?): String {
+               return errorBody?.string() ?: "Incorrect"
+            }
+
+            override fun onException(error: Throwable): String = ""
+
+            override fun onUnknown(detail: String): String = ""
         }
-
-        override fun onException(error: Throwable): String = ""
-
-        override fun onUnknown(detail: String): String = ""
-    }
 
         val service = Retrofit.Builder()
             .baseUrl(server.url("/"))
