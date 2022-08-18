@@ -44,8 +44,3 @@ tasks.withType<JavaCompile> {
     sourceCompatibility = JavaVersion.VERSION_11.toString()
     targetCompatibility = JavaVersion.VERSION_11.toString()
 }
-
-tasks.withType<Jar> {
-    from(sourceSets["main"].allSource)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
