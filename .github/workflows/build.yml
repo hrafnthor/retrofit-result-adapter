@@ -21,7 +21,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    if: github.repository == 'hrafnthor/retrofit-result-adapter' && github.ref == 'refs/heads/master'
+    if: github.repository == 'hrafnthor/retrofit-result-adapter' && github.ref == 'refs/heads/main'
     needs:
       - jvm
       
