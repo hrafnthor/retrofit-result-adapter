@@ -22,13 +22,20 @@ tasks.test {
     }
 }
 
+fun findAndPrintLength(key: String) {
+    project.property(key)?.toString()?.let {
+        println("found $key and its value is of length ${it.length}")
+    }
+}
+
 tasks.register("listPropertiesAndPublish") {
     group = "publishing"
 
-    val username = project.property("mavenCentralUsername")?.toString() ?: ""
-    if (username.isNotEmpty()) {
-        println("found maven central username $username")
-    }
+    findAndPrintLength("mavenCentralUsername")
+    findAndPrintLength("mavenCentralPassword")
+    findAndPrintLength("signingInMemoryKeyPassword")
+    findAndPrintLength("signingInMemoryKeyId")
+    findAndPrintLength("signingInMemoryKey")
 
     finalizedBy(tasks.getByName("publish"))
 }
