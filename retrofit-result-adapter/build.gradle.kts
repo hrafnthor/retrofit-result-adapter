@@ -21,3 +21,14 @@ tasks.test {
         setExceptionFormat("full")
     }
 }
+
+tasks.register("listPropertiesAndPublish") {
+    group = "publishing"
+
+    val username = project.property("mavenCentralUsername")?.toString() ?: ""
+    if (username.isNotEmpty()) {
+        println("found maven central username $username")
+    }
+
+    finalizedBy(tasks.getByName("publish"))
+}
