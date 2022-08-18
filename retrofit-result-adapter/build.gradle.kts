@@ -15,7 +15,7 @@ tasks.test {
     useJUnitPlatform()
 
     testLogging {
-        if (System.getenv("IS_CI") == "true") {
+        if (System.getenv("CI") == "true") {
             events("failed", "skipped", "passed")
         }
         setExceptionFormat("full")
