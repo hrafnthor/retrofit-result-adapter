@@ -1,15 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.mavenPublish)
     checkstyle
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-    }
 }
 
 dependencies {
@@ -23,24 +15,9 @@ tasks.test {
     useJUnitPlatform()
 
     testLogging {
-        if (System.getenv("CI") == "true") {
+        if (System.getenv("IS_CI") == "true") {
             events("failed", "skipped", "passed")
         }
         setExceptionFormat("full")
     }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        // Treat all Kotlin warnings as errors
-//      allWarningsAsErrors = true
-
-        jvmTarget = JavaVersion.VERSION_11.toString()
-        freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
-    }
-}
-
-tasks.withType<JavaCompile> {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
 }
