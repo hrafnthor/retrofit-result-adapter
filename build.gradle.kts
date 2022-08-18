@@ -17,9 +17,6 @@ allprojects {
     }
     tasks.withType(KotlinCompile::class).configureEach {
         kotlinOptions {
-            // Treat all Kotlin warnings as errors
-//                allWarningsAsErrors = true
-
             // Set JVM target to 11
             jvmTarget = JavaVersion.VERSION_11.toString()
         }

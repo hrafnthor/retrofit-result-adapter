@@ -21,21 +21,3 @@ tasks.test {
         setExceptionFormat("full")
     }
 }
-
-fun findAndPrintLength(key: String) {
-    project.property(key)?.toString()?.let {
-        println("found $key and its value is of length ${it.length}")
-    }
-}
-
-tasks.register("listPropertiesAndPublish") {
-    group = "publishing"
-
-    findAndPrintLength("mavenCentralUsername")
-    findAndPrintLength("mavenCentralPassword")
-    findAndPrintLength("signingInMemoryKeyPassword")
-    findAndPrintLength("signingInMemoryKeyId")
-    findAndPrintLength("signingInMemoryKey")
-
-    finalizedBy(tasks.getByName("publish"))
-}
