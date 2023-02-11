@@ -20,8 +20,8 @@ This `Retrofit` instance can now process api interfaces defined as so:
 ```kotlin
 interface RetrofitApi {
 
-@GET("SOME_URI")
-suspend fun getSomeData(): Result<TheResultType, TheErrorWrapperType>
+ @GET("SOME_URI")
+ suspend fun getSomeData(): Result<TheResultType, TheErrorWrapperType>
 }
 ```
 
@@ -31,15 +31,15 @@ And the call site simply looks like this:
 val api = Retrofit.create(RetrofitApi::class.java)
 
 api
-.getSomeData()
-.onSuccess {
+ .getSomeData()
+ .onSuccess {
     // response to success
-}
-.onFailure {
+ }
+ .onFailure {
     // respond to failure or skip doing so here at the call site,
     // rather passing the result monad higher up the chain for the
     // error processing
-}
+ }
 ```
 
 The `ResultCallAdapterFactory` will pass through any api definitions that are not using a Result monad, not touching them, as a `CallAdapterFactory` should do.
@@ -49,10 +49,10 @@ For instance there will not be any issues in using the following api definition:
 ```kotlin
 interface MixedRetrofitApi {
 
-@GET("SOME_URI")
-suspend fun getSomeData(): Result<TheResultType, TheErrorWrapperType>
+ @GET("SOME_URI")
+ suspend fun getSomeData(): Result<TheResultType, TheErrorWrapperType>
 
-suspend fun someOtherData(): TheResultType
+ suspend fun someOtherData(): TheResultType
 }
 ```
 
@@ -67,15 +67,15 @@ For instance, lets imagine that there exists a unified type for error delivery i
 ```kotlin
 sealed interface Cause {
 
-val msg: String
+ val msg: String
 
-class Unknown(override val msg: String) : Cause
+ class Unknown(override val msg: String) : Cause
 
-interface Network : Cause
+ interface Network : Cause
 
-interface Storage: Cause
+ interface Storage: Cause
 
-interface Domain : Cause
+ interface Domain : Cause
 }
 ```
 
@@ -84,25 +84,26 @@ With that there is then a `NetworkCause` definition inside the network layer lik
 ```kotlin
 sealed class NetworkCause(override val msg: String): Cause.Network {
 
-object Empty: NetworkCause("Empty response received")
+ object Empty: NetworkCause("Empty response received")
 
-class Exception(error: Throwable): NetworkCause(msg = error.message ?: "")
+ class Exception(error: Throwable): NetworkCause(msg = error.message ?: "")
 
-class NetworkError(val code: Int, message: String): NetworkCause(msg = message)
+ class NetworkError(val code: Int, message: String): NetworkCause(msg = message)
 }
 ```
 
 In it's simplest form, the `ErrorProcessor` for the `ResultCallAdapterFactory` can now look like this when returning a `Cause` as the error delivery object:
 
 ```kotlin
-val processor = object:ErrorProcessor<Cause> {
-override fun onEmpty(): Cause = NetworkCause.Empty
+object: ErrorProcessor<Cause> {
 
-override fun onException(error: Throwable): Cause = NetworkCause.Exception(error)
+ override fun onEmpty(): Cause = NetworkCause.Empty
 
-override fun onNetworkError(code: Int, errorBody: ResponseBody?): Cause = NetworkCause.NetworkError(code, someProcessingFunction(errorBody))
+ override fun onException(error: Throwable): Cause = NetworkCause.Exception(error)
 
-override fun onUnknown(detail: String): Cause = Cause.Unknown(detail)
+ override fun onNetworkError(code: Int, errorBody: ResponseBody?): Cause = NetworkCause.NetworkError(code, someProcessingFunction(errorBody))
+
+ override fun onUnknown(detail: String): Cause = Cause.Unknown(detail)
 }
 ```
 
@@ -115,15 +116,15 @@ Consider the api definition below:
 ```kotlin
 interface RetrofitApi {
 
-@NullableBody
-@GET("SOME_URI")
-suspend fun thisMightBeNull(): Result<TheResultType, TheErrorWrapperType>
+ @NullableBody
+ @GET("SOME_URI")
+ suspend fun thisMightBeNull(): Result<TheResultType, TheErrorWrapperType>
 
-@GET("SOME_URI")
-suspend fun thisReturnsNothing(): Result<Unit, TheErrorWrapperType>
+ @GET("SOME_URI")
+ suspend fun thisReturnsNothing(): Result<Unit, TheErrorWrapperType>
 
-@GET("SOME_URI")
-suspend fun thisShouldReturnValues(): Result<TheResultType, TheErrorWrapperType>
+ @GET("SOME_URI")
+ suspend fun thisShouldReturnValues(): Result<TheResultType, TheErrorWrapperType>
 }
 ```
 
