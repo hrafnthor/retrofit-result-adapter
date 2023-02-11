@@ -33,12 +33,12 @@ And the call site simply looks like this:
 val api = Retrofit.create(RetrofitApi::class.java)
 
 val result = api.getSomeData()
-								.onSuccess {
-									// response to success
-								}
-								.onFailure {
-									// respond to failure or skip doing so and simply pass the result monad higher up the chain
-								}
+		.onSuccess {
+			// response to success
+		}
+		.onFailure {
+			// respond to failure or skip doing so and simply pass the result monad higher up the chain
+		}
 ```
 
 The `ResultCallAdapterFactory` will pass through any api definitions that are not using a Result monad, not touching them, as a `CallAdapterFactory` should do.
