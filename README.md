@@ -36,7 +36,9 @@ api
     // response to success
 }
 .onFailure {
-    // respond to failure or skip doing so and simply pass the result monad higher up the chain
+    // respond to failure or skip doing so here at the call site,
+    // rather passing the result monad higher up the chain for the
+    // error processing
 }
 ```
 
