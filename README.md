@@ -32,8 +32,13 @@ And the call site simply looks like this:
 ```kotlin
 val api = Retrofit.create(RetrofitApi::class.java)
 
-val result = api.getSomeData().onSuccess { // response to success }.onFailure { // respond to failure or skip doing so and simply pass the result monad higher up the chain }
-
+val result = api.getSomeData()
+								.onSuccess {
+									// response to success
+								}
+								.onFailure {
+									// respond to failure or skip doing so and simply pass the result monad higher up the chain
+								}
 ```
 
 The `ResultCallAdapterFactory` will pass through any api definitions that are not using a Result monad, not touching them, as a `CallAdapterFactory` should do.
@@ -61,15 +66,15 @@ For instance, lets imagine that there exists a unified type for error delivery i
 ```kotlin
 sealed interface Cause {
 
-    val msg: String
+  val msg: String
 
-    class Unknown(override val msg: String) : Cause
+  class Unknown(override val msg: String) : Cause
 
-    interface Network : Cause
+  interface Network : Cause
 
-    interface Storage: Cause
+  interface Storage: Cause
 
-    interface Domain : Cause
+  interface Domain : Cause
 }
 ```
 
