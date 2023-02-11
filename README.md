@@ -9,7 +9,7 @@ This is a small library that wraps Retrofit responses in result monads, specific
 When constructing a Retrofit instance, simply add an instance of `ResultCallAdapterFactory` as a `CallAdapterFactory` to the builder:
 
 ```kotlin
-val retrofit = Retrofit.Builder()
+Retrofit.Builder()
 		...
 		.addCallAdapterFactory(ResultCallAdapterFactory(processor = ErrorProcessor<TheErrorWrapperType>()))
 		...
@@ -32,7 +32,7 @@ And the call site simply looks like this:
 ```kotlin
 val api = Retrofit.create(RetrofitApi::class.java)
 
-val result = api.getSomeData()
+api.getSomeData()
 		.onSuccess {
 			// response to success
 		}
